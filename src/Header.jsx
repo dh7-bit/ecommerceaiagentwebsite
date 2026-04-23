@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import k from "./assest/download.png";
 import icon from "./assest/download (2).png";
 import Grocery from "./assest/grocery.png";
@@ -20,6 +21,7 @@ export const Header = ({ setSidebarOpen, sidebarOpen }) => {
   const name = localStorage.getItem("name");
   const firstLetter = name ? name.charAt(0).toUpperCase() : "";
 const [dropdownOpen, setDropdownOpen] = useState(false);
+const navigate = useNavigate();
 const handlelogout=async()=>{
       console.log("Logged out successfully");
   localStorage.removeItem("token");
@@ -29,7 +31,7 @@ const handlelogout=async()=>{
     localStorage.removeItem("rzp_stored_checkout_id");
      localStorage.removeItem("rzp_checkout_anon_id");
       // Redirect user to login page
-      window.location.href = "/login";
+      navigate("/signup");
     }
   return (
     <>
