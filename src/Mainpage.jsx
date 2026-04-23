@@ -34,7 +34,7 @@ export const Main = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:10000/ask", {
+      const res = await fetch("https://ragtesting-i2bp.onrender.com/ask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
