@@ -21,29 +21,8 @@ export const Header = ({ setSidebarOpen, sidebarOpen }) => {
   const firstLetter = name ? name.charAt(0).toUpperCase() : "";
 const [dropdownOpen, setDropdownOpen] = useState(false);
 const handlelogout=async()=>{
-console.log('ss')
-  setDropdownOpen(!dropdownOpen)
-    try {
-    // Get the token from wherever you store it (localStorage, context, etc.)
-    const token = localStorage.getItem("token");
-
-    // Call backend logout API
-    const response = await fetch("http://127.0.0.1:5000/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization":`Bearer ${token}`
-      },
-      credentials: "include",
-      body:JSON.stringify({"email":localStorage.getItem('email')})
-    });
-console.log(response)
-    if (response.ok) {
-      // Logout success
       console.log("Logged out successfully");
-
-      // Clear token or user data from local storage/context
-      localStorage.removeItem("token");
+  localStorage.removeItem("token");
  localStorage.removeItem("name");
   localStorage.removeItem("email");
    localStorage.removeItem("rzp_device_id");
@@ -52,10 +31,6 @@ console.log(response)
       // Redirect user to login page
       window.location.href = "/login";
     }
-  } catch (error) {
-    console.error("Error during logout:", error);
-  }
-}
   return (
     <>
       {/* ================= SIDEBAR ================= */}
