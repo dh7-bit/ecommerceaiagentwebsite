@@ -1,0 +1,7 @@
+Flask
+flask-jwt-extended
+pymongo
+python-dotenv
+requests
+flask-cors
+gunicorn

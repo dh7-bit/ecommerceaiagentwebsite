@@ -1,0 +1,10 @@
+import os
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+load_dotenv()
+MONGO_URI = os.environ.get("MONGO_URI")
+
+client = MongoClient(MONGO_URI)
+db = client.amazon_clone
+users_collection = db.users
