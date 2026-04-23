@@ -4,7 +4,6 @@ from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from signup import signups
-from logoutperson import logouts
 import requests
 from datetime import timedelta
 from db import users_collection
@@ -85,6 +84,5 @@ def google_signup():
 
 
 app.register_blueprint(signups)
-app.register_blueprint(logouts)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=True)
