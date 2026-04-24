@@ -23,7 +23,7 @@ def create_order():
 
     try:
         order = client.order.create({
-            "amount": int(amount),
+            "amount": float(amount),
             "currency": "INR",
             "payment_capture": 1
         })
