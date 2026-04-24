@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { addTask, decreaseTask, deleteitem } from "./Store";
 
 export const Cart = () => {
+  const loadRazorpayScript = () =>
+  new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
   const cartFromRedux = useSelector((state) => state.task.task) || [];
   const cartFromLocal = JSON.parse(localStorage.getItem("cart") || "[]");
   const fg = cartFromRedux.length ? cartFromRedux : cartFromLocal;
@@ -33,6 +41,87 @@ export const Cart = () => {
       );
     }
   };
+
+
+
+const handlePurchase = async () => {
+  const sdkLoaded = await loadRazorpayScript();
+
+  if (!sdkLoaded) {
+    alert("Razorpay SDK failed to load");
+    return;
+  }
+
+  try {
+    // 1. Create order in backend
+    const res = await fetch("https://ecommerceaiagentwebsites.onrender.com/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+         Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        cart: fg,
+        amount: Math.round(
+  fg.reduce((acc, item) => acc + item.price, 0) * 100)
+      }),
+    });
+
+    const order = await res.json();
+
+    // 2. Razorpay options
+    const options = {
+      key: "rzp_test_R65lJ9poc06w6e",
+      amount: order.amount,
+      currency: "INR",
+      name: "My Store",
+      description: "Cart Purchase",
+      order_id: order.id,
+
+      handler: async function (response) {
+        // 3. Verify payment
+        const verify = await fetch(
+          "https://ecommerceaiagentwebsites.onrender.com/verify",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              ...response,
+              cart: fg,
+              amount: order.amount,
+            }),
+          }
+        );
+
+        if (verify.ok) {
+          alert("Payment Successful 🎉");
+
+          // 4. CLEAR CART (Redux + LocalStorage)
+          localStorage.removeItem("cart");
+
+          fg.forEach((item) => {
+            dispatch(deleteitem({ id: item.id }));
+          });
+
+          navigate("/");
+        } else {
+          alert("Payment verification failed");
+        }
+      },
+
+      theme: { color: "#ff9900" },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (err) {
+    console.error(err);
+    alert("Payment failed");
+  }
+};
 
   return (
     /* ✅ PAGE BACKGROUND */
@@ -111,12 +200,12 @@ export const Cart = () => {
     Continue Shopping
   </button>
 
-  <button
-    // onClick={() => handlePurchase()} // Call purchase function
-    className="px-6 py-2 bg-green-500 rounded font-bold text-black hover:bg-green-600 transition"
-  >
-    Purchase
-  </button>
+ <button
+  onClick={handlePurchase}
+  className="px-6 py-2 bg-green-500 rounded font-bold text-black hover:bg-green-600 transition"
+>
+  Purchase
+</button>
 </div>
     </div>
   );

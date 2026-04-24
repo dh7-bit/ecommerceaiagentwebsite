@@ -8,3 +8,4 @@ MONGO_URI = os.environ.get("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client.amazon_clone
 users_collection = db.users
+orders_collection=db.orders
