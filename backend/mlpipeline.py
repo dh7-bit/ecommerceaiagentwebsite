@@ -54,7 +54,18 @@ X = user_df[["total_spent", "total_items", "avg_order_value"]]
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-kmeans = KMeans(n_clusters=2, random_state=42)
+kmeans = KMeans(n_clusters=1, random_state=42)
 user_df["cluster"] = kmeans.fit_predict(X_scaled)
 
 print(user_df)
+for _, row in user_df.iterrows():
+    second.update_one(
+        {"user_id": row["user_id"]},
+        {"$set": {
+            "cluster": int(row["cluster"]),
+            "total_spent": float(row["total_spent"]),
+            "total_items": int(row["total_items"]),
+            "avg_order_value": float(row["avg_order_value"])
+        }},
+        upsert=True
+    )
