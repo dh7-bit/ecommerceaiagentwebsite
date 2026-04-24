@@ -23,17 +23,17 @@ def create_order():
 
     try:
         order = client.order.create({
-            "amount": float(amount),
+            "amount": int(amount),
             "currency": "INR",
             "payment_capture": 1
         })
 
         user_id = get_jwt_identity()
-
+        amount_rupees = amount / 100
         orders_collection.insert_one({
             "user_id": user_id,
             "items": cart,
-            "amount": amount,
+            "amount": amount_rupees,
             "status": "pending",
             "razorpay_order_id": order["id"]
         })
