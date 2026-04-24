@@ -20,16 +20,16 @@ def create_order():
     data = request.json
     amount = data.get("amount")
     cart = data.get("cart")
-
+    amount_paise = int(float(amount))
+    amount_rupees = amount_paise / 100
     try:
         order = client.order.create({
-            "amount": int(amount),
+            "amount": amount_paise,
             "currency": "INR",
             "payment_capture": 1
         })
 
         user_id = get_jwt_identity()
-        amount_rupees = amount / 100
         orders_collection.insert_one({
             "user_id": user_id,
             "items": cart,
