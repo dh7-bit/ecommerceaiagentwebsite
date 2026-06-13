@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <GoogleOAuthProvider clientId="941060693182-2p08411gqoupi9rjevdagu6ggcj5thlp.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <Setup />
